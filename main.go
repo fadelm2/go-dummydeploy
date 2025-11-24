@@ -33,6 +33,11 @@ func main() {
 		})
 	})
 
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"status": "run jalan",
+		})
+	})
 	// gateway
 	app.Get("/gateway", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
