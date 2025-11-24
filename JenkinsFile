@@ -43,7 +43,9 @@ pipeline {
             steps {
                      sh '''
                            echo "Starting app on port 8086..."
-                           nohup ./deploy > deploy.log 2>&1 &
+                           ./app &
+                        ./deploy > >(tee deploy.log) 2>&1 &
+
 
                         # kasih waktu app untuk booting
                         sleep 5
