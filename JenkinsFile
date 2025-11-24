@@ -39,8 +39,11 @@ pipeline {
         stage('Run App') {
             steps {
                 sh '''
-                    nohup ./app > app.log 2>&1 &
-                '''
+                        nohup ./app > app.log 2>&1 &
+                        sleep 2
+                        echo "===== PROCESS LIST ====="
+                        ps aux | grep app
+                    '''
             }
         }
 
