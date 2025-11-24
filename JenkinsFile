@@ -12,6 +12,15 @@ pipeline {
                 '''
             }
         }
+        stage('Prepare Config') {
+                    steps {
+                        configFileProvider(
+                            [configFile(fileId: 'configdeploydummy', targetLocation: 'config.json')]
+                        ) {
+                            sh 'cat config.json'
+                        }
+                    }
+           }
 
         stage('Build Docker Image') {
             steps {

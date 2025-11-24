@@ -10,10 +10,14 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app .
 
 # Stage 2: Run minimal image
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
+
+# copy binary
 COPY --from=builder /app/app .
+
+# 🔥 copy config.json
+COPY config.json .
 
 EXPOSE 8086
 CMD ["./app"]
