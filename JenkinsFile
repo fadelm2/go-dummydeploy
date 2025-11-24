@@ -26,15 +26,15 @@ pipeline {
         stage('Rotate Log & Build') {
             steps {
                 sh '''
-                    if [ -f app.log ]; then
-                        mv app.log "app-$(date +%Y%m%d-%H%M%S).log"
+                    if [ -f deploy.log ]; then
+                        mv deploy.log "app-$(date +%Y%m%d-%H%M%S).log"
                     fi
 
                     go mod tidy
-                    go build -o app
+                    go build -o deploy
 
                     ls -lah
-                    file app
+                    file deploy
                 '''
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                      sh '''
                            echo "Starting app on port 8086..."
-                           nohup ./app > app.log 2>&1 &
+                           nohup ./deploy > deploy.log 2>&1 &
                             disown
 
                         # kasih waktu app untuk booting
@@ -66,7 +66,7 @@ pipeline {
                 sh '''
                     echo "===== LAST 20 LINES OF app.log ====="
                     if [ -f app.log ]; then
-                        tail -n 20 app.log
+                        tail -n 20 deploy.log
                     else
                         echo "app.log not found!"
                     fi
