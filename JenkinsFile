@@ -46,7 +46,7 @@ pipeline {
                               pkill -f "./deploy" || true
 
                               echo "=== STARTING APP WITH setsid ==="
-                              nohup setsid ./deploy > deploy.log 2>&1 < /dev/null &
+                              run ./deploy > deploy.log 2>&1 < /dev/null &
 
                               sleep 3
 
