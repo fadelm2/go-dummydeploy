@@ -43,5 +43,16 @@ pipeline {
                 '''
             }
         }
+        stage('Check Log App') {
+            steps {
+                sh '''
+                    echo "===== LAST 20 LINES OF app.log ====="
+                    if [ -f app.log ]; then
+                        tail -n 20 app.log
+                    else
+                        echo "app.log not found!"
+                    fi
+                '''
+            }
     }
 }
