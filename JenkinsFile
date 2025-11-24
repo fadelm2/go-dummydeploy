@@ -44,6 +44,7 @@ pipeline {
                      sh '''
                            echo "Starting app on port 8086..."
                            nohup ./app > app.log 2>&1 &
+                            disown
 
                         # kasih waktu app untuk booting
                         sleep 5
