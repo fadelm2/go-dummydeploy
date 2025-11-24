@@ -43,7 +43,7 @@ pipeline {
             steps {
                      sh '''
                          echo "Start app with setsid..."
-                         setsid ./app > app.log 2>&1 < /dev/null &
+                         setsid ./deploy > deploy.log 2>&1 < /dev/null &
 
                          sleep 2
 
