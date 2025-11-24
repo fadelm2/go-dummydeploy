@@ -59,11 +59,11 @@ pipeline {
         stage('Check Log App') {
             steps {
                 sh '''
-                    echo "===== LAST 20 LINES OF app.log ====="
-                    if [ -f app.log ]; then
+                    echo "===== LAST 20 LINES OF deploy.log ====="
+                    if [ -f deploy.log ]; then
                         tail -n 20 deploy.log
                     else
-                        echo "app.log not found!"
+                        echo "deploy.log not found!"
                     fi
                 '''
             }
