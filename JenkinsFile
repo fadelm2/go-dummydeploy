@@ -32,6 +32,9 @@ pipeline {
 
                     go mod tidy
                     go build -o app
+
+                    ls -lah
+                    file app
                 '''
             }
         }
