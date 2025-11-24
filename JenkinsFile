@@ -50,13 +50,13 @@ pipeline {
                         sleep 5
 
                         echo "=== CHECK PROCESS ==="
-                        ps aux | grep '[a]pp'
+                        ps aux | grep '[d]eploy'
 
                         echo "=== CHECK PORT ==="
                         lsof -i :8086 || true
 
                         echo "=== LOG ==="
-                        tail -n 50 app.log
+                        tail -n 50 deploy.log
                        '''
             }
         }
