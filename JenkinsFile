@@ -48,10 +48,10 @@ pipeline {
                          sleep 2
 
                          echo "=== CHECK PROCESS ==="
-                         ps aux | grep "[a]pp"
+                         ps aux | grep "[d]eploy"
 
                          echo "=== LIVE LOG ==="
-                         tail -n 50 app.log || true
+                         tail -n 50 deploy.log || true
                        '''
             }
         }
