@@ -1,5 +1,5 @@
 # Stage 1: Build Go binary
-FROM golang:1.24.22 AS builder
+FROM golang:latest AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
