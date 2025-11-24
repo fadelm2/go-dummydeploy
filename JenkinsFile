@@ -41,12 +41,18 @@ pipeline {
 
         stage('Run App') {
             steps {
-                sh '''
-                        nohup ./app > app.log 2>&1 &
-                        sleep 2
-                        echo "===== PROCESS LIST ====="
-                        ps aux | grep app
-                    '''
+                     sh '''
+                           echo "Starting app on port 8086..."
+                           nohup ./app > app.log 2>&1 &
+                           disown
+                           sleep 2
+
+                           echo "=== CHECK PROCESS ==="
+                           ps aux | grep app
+
+                           echo "=== CHECK PORT ==="
+                           lsof -i:8086 || true
+                       '''
             }
         }
 

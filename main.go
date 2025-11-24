@@ -13,9 +13,6 @@ func loadConfig() {
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
 
-	// default port jika tidak ada di config
-	viper.SetDefault("app.port", 8085)
-
 	if err := viper.ReadInConfig(); err != nil {
 		log.Println("⚠️ Config file tidak ditemukan, pakai default.")
 	}
