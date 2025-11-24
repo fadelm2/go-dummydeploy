@@ -3,75 +3,43 @@ pipeline {
 
     stages {
 
-        stage('Kill Port 8086') {
+        stage('Build Go Binary') {
             steps {
                 sh '''
-                    if lsof -t -i:8086 >/dev/null; then
-                        lsof -t -i:8086 | xargs kill -9
-                    fi
-                '''
-            }
-        }
-
-        stage('Prepare Config') {
-            steps {
-                configFileProvider(
-                    [configFile(fileId: 'configdeploydummy', targetLocation: 'config.json')]
-                ) {
-                    sh 'cat config.json'
-                }
-            }
-        }
-
-        stage('Rotate Log & Build') {
-            steps {
-                sh '''
-                    if [ -f deploy.log ]; then
-                        mv deploy.log "app-$(date +%Y%m%d-%H%M%S).log"
-                    fi
-
+                    echo "===> Building Go binary..."
                     go mod tidy
-                    go build -o deploy
-
-                    ls -lah
-                    file deploy
+                    go build -o app .
                 '''
             }
         }
 
-        stage('Run App') {
-            steps {
-                    sh '''
-                              echo "=== STOP OLD PROCESS (if any) ==="
-                              pkill -f "./deploy" || true
-
-                              echo "=== STARTING APP WITH setsid ==="
-                              run ./deploy > deploy.log 2>&1 < /dev/null &
-
-                              sleep 3
-
-                              echo "=== CHECK PROCESS ==="
-                              pgrep -fl deploy || echo "❌ PROCESS NOT FOUND"
-
-                              echo "=== LAST 50 LINES OF deploy.log ==="
-                              tail -n 50 deploy.log || true
-                          '''
-            }
-        }
-
-        stage('Check Log App') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    echo "===== LAST 20 LINES OF deploy.log ====="
-                    if [ -f deploy.log ]; then
-                        tail -n 20 deploy.log
-                    else
-                        echo "deploy.log not found!"
-                    fi
+                    echo "===> Building Docker image..."
+                    docker build -t myapp:latest .
                 '''
             }
         }
 
-    } // <-- ini yang hilang sebelumnya
+        stage('Restart Container') {
+            steps {
+                sh '''
+                    echo "===> Restarting container..."
 
+                    # stop & remove old
+                    docker stop myapp || true
+                    docker rm myapp || true
+
+                    # run new container
+                    docker run -d \
+                        --name myapp \
+                        -p 8086:8086 \
+                        myapp:latest
+
+                    echo "Container restarted successfully!"
+                '''
+            }
+        }
+    }
 }
