@@ -43,7 +43,10 @@ func main() {
 	})
 
 	port := viper.GetInt("app.port")
-	fmt.Printf("🚀 Server running on port %d\n", port)
+	log.Printf("🚀 Server running on port %d\n", port)
+	log.Println("Server running...")
+	fmt.Println("Hello")
+	log.Println("Server running...")
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", port)))
 }
