@@ -43,6 +43,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Check Log App') {
             steps {
                 sh '''
@@ -54,5 +55,8 @@ pipeline {
                     fi
                 '''
             }
-    }
+        }
+
+    } // <-- ini yang hilang sebelumnya
+
 }
