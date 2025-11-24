@@ -42,22 +42,16 @@ pipeline {
         stage('Run App') {
             steps {
                      sh '''
-                           echo "Starting app on port 8086..."
-                           ./app &
-                        ./deploy > >(tee deploy.log) 2>&1 &
+                         echo "Start app with setsid..."
+                         setsid ./app > app.log 2>&1 < /dev/null &
 
+                         sleep 2
 
-                        # kasih waktu app untuk booting
-                        sleep 5
+                         echo "=== CHECK PROCESS ==="
+                         ps aux | grep "[a]pp"
 
-                        echo "=== CHECK PROCESS ==="
-                        ps aux | grep '[d]eploy'
-
-                        echo "=== CHECK PORT ==="
-                        lsof -i :8086 || true
-
-                        echo "=== LOG ==="
-                        tail -n 50 deploy.log
+                         echo "=== LIVE LOG ==="
+                         tail -n 50 app.log || true
                        '''
             }
         }
