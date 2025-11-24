@@ -44,14 +44,18 @@ pipeline {
                      sh '''
                            echo "Starting app on port 8086..."
                            nohup ./app > app.log 2>&1 &
-                           disown
-                           sleep 2
 
-                           echo "=== CHECK PROCESS ==="
-                           ps aux | grep app
+                        # kasih waktu app untuk booting
+                        sleep 5
 
-                           echo "=== CHECK PORT ==="
-                           lsof -i:8086 || true
+                        echo "=== CHECK PROCESS ==="
+                        ps aux | grep '[a]pp'
+
+                        echo "=== CHECK PORT ==="
+                        lsof -i :8086 || true
+
+                        echo "=== LOG ==="
+                        tail -n 50 app.log
                        '''
             }
         }
