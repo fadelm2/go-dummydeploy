@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Kill Port 8086') {
+            steps {
+                sh '''
+                    if lsof -t -i:8086 >/dev/null; then
+                        lsof -t -i:8086 | xargs kill -9
+                    fi
+                '''
+            }
+        }
+
+        stage('Prepare Config') {
+            steps {
+                configFileProvider(
+                    [configFile(fileId: 'configdeploydummy', targetLocation: 'config.json')]
+                ) {
+                    sh 'cat config.json'
+                }
+            }
+        }
+
+        stage('Rotate Log & Build') {
+            steps {
+                sh '''
+                    if [ -f app.log ]; then
+                        mv app.log "app-$(date +%Y%m%d-%H%M%S).log"
+                    fi
+
+                    go mod tidy
+                    go build -o app
+                '''
+            }
+        }
+
+        stage('Run App') {
+            steps {
+                sh '''
+                    nohup ./app > app.log 2>&1 &
+                '''
+            }
+        }
+    }
+}
