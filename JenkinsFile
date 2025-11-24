@@ -41,18 +41,21 @@ pipeline {
 
         stage('Run App') {
             steps {
-                     sh '''
-                         echo "Start app with setsid..."
-                         setsid ./deploy > deploy.log 2>&1 < /dev/null &
+                    sh '''
+                              echo "=== STOP OLD PROCESS (if any) ==="
+                              pkill -f "./deploy" || true
 
-                         sleep 2
+                              echo "=== STARTING APP WITH setsid ==="
+                              nohup setsid ./deploy > deploy.log 2>&1 < /dev/null &
 
-                         echo "=== CHECK PROCESS ==="
-                         ps aux | grep "[d]eploy"
+                              sleep 3
 
-                         echo "=== LIVE LOG ==="
-                         tail -n 50 deploy.log || true
-                       '''
+                              echo "=== CHECK PROCESS ==="
+                              pgrep -fl deploy || echo "❌ PROCESS NOT FOUND"
+
+                              echo "=== LAST 50 LINES OF deploy.log ==="
+                              tail -n 50 deploy.log || true
+                          '''
             }
         }
 
